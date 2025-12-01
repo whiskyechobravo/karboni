@@ -95,17 +95,21 @@ Karboni does not need to write to your library. Thus, we recommend that your API
 key be read-only, and that it does not grant any more access to your Zotero data
 than strictly necessary.
 
-Optionally, you may also add the following variables to your `.env` file:
+By default, Karboni commands will manage data in a `data/karboni` directory
+under your current directory, and use SQLite as the relational database. You may
+change those defaults by setting the following variables in your `.env` file:
 
-- `KARBONI_DATABASE_URL` (defaults to `sqlite:///data/karboni/${ZOTERO_LIBRARY_PREFIX}-${ZOTERO_LIBRARY_ID}/library.sqlite`)
-- `KARBONI_DATA_PATH` (defaults to `./data/karboni/${ZOTERO_LIBRARY_PREFIX}-${ZOTERO_LIBRARY_ID}/`)
+- `KARBONI_DATA_PATH`. Defaults to
+  `./data/karboni/ZOTERO_LIBRARY_PREFIX-ZOTERO_LIBRARY_ID/`.
+- `KARBONI_DATABASE_URL`. Defaults to
+  `sqlite:///data/karboni/ZOTERO_LIBRARY_PREFIX-ZOTERO_LIBRARY_ID/library.sqlite`.
+  For other relational databases, see the [SQLAlchemy documentation on database
+  URLs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls).
 
-Once the required variables have been set, you may operate Karboni. Some
-examples below.
-
-If you have installed Karboni in a virtual environment, make sure it is active
-before attempting to use the command line interface (see the activation command
-in the Installation section).
+Once the required variables have been set, you may use Karboni commands. If you
+have installed Karboni in a virtual environment, make sure it is active before
+attempting to use the commands (see the activation command in the Installation
+section). Some example commands below.
 
 Initialize the mirror database (create the tables):
 
