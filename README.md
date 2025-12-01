@@ -19,34 +19,93 @@ Mirror a Zotero library into a SQL database.
 - Support for a wide range of database systems (through SQLAlchemy).
 
 
-## Python interface
+## Installation
 
-The `karboni` Python module provides the main entry points, with functions such
-as `initialize()` and `synchronize()`.
+It is recommended that you install the package in a virtual environment.
 
-If you wish to use SQLAlchemy for querying the database, you might want to
-import models from `karboni.database.schema`.
+The installation steps might look like the following. Replace `DIR` with the
+desired path for your new virtual environment.
+
+### Unix/macOS
+
+Create the virtual environment:
+
+```sh
+python3 -m venv DIR
+```
+
+Activate the virtual environment:
+
+```sh
+source DIR/bin/activate
+```
+
+Install Karboni:
+
+```sh
+python3 -m pip install karboni
+```
+
+### Windows
+
+Create the virtual environment:
+
+```
+py -m venv DIR
+```
+
+Activate the virtual environment:
+
+```
+DIR\Scripts\activate
+```
+
+Install Karboni:
+
+```
+py -m pip install karboni
+```
 
 
 ## Command line interface
 
-To use the command line interface, you must first configure your Zotero
-credentials in environment variables, or in a `.env` file. You could copy the
-included `template.env` to `.env` and edit the values.
+In order to use the command line interface, you must first configure your Zotero
+credentials. With a text editor, create a `.env` file in your working directory
+with the following content:
 
-The required variables are:
+```
+ZOTERO_LIBRARY_PREFIX=your_library_prefix
+ZOTERO_LIBRARY_ID=your_library_id
+ZOTERO_API_KEY=your_api_key
+```
 
-- `ZOTERO_LIBRARY_PREFIX`
-- `ZOTERO_LIBRARY_ID`
-- `ZOTERO_API_KEY`
+Replace `your_library_prefix` with `users` for a personal library, or `groups`
+for a group library.
 
-Optional variables are:
+Replace `your_library_id` with the identifier of your library. For a personal
+library the value is your user ID, as found on
+https://www.zotero.org/settings/keys (you must be logged-in). For a group
+library this value is the group ID of the library, as found in the URL of the
+library (e.g., the groupID of the library at
+`https://www.zotero.org/groups/1234567/example` is `1234567`).
+
+Replace `your_api_key` with your Zotero API key. You may create one for your
+library on https://www.zotero.org/settings/keys/new (you must be logged-in).
+Karboni does not need to write to your library. Thus, we recommend that your API
+key be read-only, and that it does not grant any more access to your Zotero data
+than strictly necessary.
+
+Optionally, you may also add the following variables to your `.env` file:
 
 - `KARBONI_DATABASE_URL` (defaults to `sqlite:///data/karboni/${ZOTERO_LIBRARY_PREFIX}-${ZOTERO_LIBRARY_ID}/library.sqlite`)
 - `KARBONI_DATA_PATH` (defaults to `./data/karboni/${ZOTERO_LIBRARY_PREFIX}-${ZOTERO_LIBRARY_ID}/`)
 
 Once the required variables have been set, you may operate Karboni. Some
 examples below.
+
+If you have installed Karboni in a virtual environment, make sure it is active
+before attempting to use the command line interface (see the activation command
+in the Installation section).
 
 Initialize the mirror database (create the tables):
 
@@ -71,6 +130,15 @@ List the options of a given command:
 ```sh
 karboni COMMAND --help
 ```
+
+
+## Python interface
+
+The `karboni` Python module provides the main entry points, with functions such
+as `initialize()` and `synchronize()`.
+
+If you wish to use SQLAlchemy for querying the database, you might want to
+import models from `karboni.database.schema`.
 
 
 ## Design choices
