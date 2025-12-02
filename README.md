@@ -129,7 +129,7 @@ List the available commands and general options:
 karboni --help
 ```
 
-List the options of a given command:
+List the options of a specific command:
 
 ```sh
 karboni COMMAND --help
@@ -146,7 +146,7 @@ karboni sync --style apa --style vancouver --export-format bibtex --export-forma
 Karboni performs incremental synchronization by default, but for it to work you
 must use the same data options on subsequent invocations of the `karboni sync`
 command. If you wish to re-synchronize with different data options, add the
-`--full` option to your command to require a full synchronization, for example:
+`--full` option to your command to require a full synchronization. For example:
 
 ```sh
 karboni sync --style apa-5th-edition --full
@@ -159,8 +159,9 @@ For the export formats available for the `--export-format` option, refer to the
 [Zotero API documentation on export
 formats](https://www.zotero.org/support/dev/web_api/v3/basics#item_export_formats).
 
-For the locales available for the `--locale` option, refer to the [CSL style
-locales](https://github.com/citation-style-language/locales).
+For the locales available for the `--locale` option, refer to the [Citation
+Style Language locales](https://github.com/citation-style-language/locales).
+Note that some styles use a fixed locale and will ignore the `--locale` option.
 
 
 ## Python interface
