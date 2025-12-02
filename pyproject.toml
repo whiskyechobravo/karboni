@@ -37,19 +37,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = [
-    "coverage >= 6.1.2, < 8",
-]
 dev = [
     "httpx",
     "mypy >= 1.16.1",
     "pre-commit >= 4.2.0",
     "rope >= 1.13.0",
     "ruff >= 0.12.11",
-]
-docs = [
-    "mkdocs-material >= 9.4, < 10",
-    "mike >= 1.1.2, < 3",
 ]
 
 [project.urls]
