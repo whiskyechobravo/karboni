@@ -105,6 +105,9 @@ change those defaults by setting the following variables in your `.env` file:
   `sqlite:///data/karboni/ZOTERO_LIBRARY_PREFIX-ZOTERO_LIBRARY_ID/library.sqlite`.
   For other relational databases, see the [SQLAlchemy documentation on database
   URLs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls).
+  While SQLite support is readily available through the Python standard library,
+  other database backends usually require that you install additional Python
+  packages.
 
 Once the required variables have been set, you may use Karboni commands. If you
 have installed Karboni in a virtual environment, make sure it is active before
@@ -169,7 +172,7 @@ Note that some styles use a fixed locale and will ignore the `--locale` option.
 The `karboni` Python module provides the main entry points, with functions such
 as `initialize()` and `synchronize()`.
 
-If you wish to use SQLAlchemy for querying the database, you might want to
+If you wish to use the SQLAlchemy ORM to query the database, you might want to
 import models from `karboni.database.schema`.
 
 
@@ -178,9 +181,9 @@ import models from `karboni.database.schema`.
 Here are some of the design choices that have guided the development of Karboni:
 
 - Perform Zotero API requests and file IO asynchronously to minimize idle time.
-- Use SQLite as the baseline database system, reducing the need for additional
-  dependencies (it's included in the Python standard library), but interface it
-  through SQLAlchemy in order to support other databases as well.
+- Use SQLite as the baseline database system (reducing the need for additional
+  dependencies), but interface it through SQLAlchemy in order to support other
+  databases as well.
 - Since Karboni itself only needs a few simple database operations, encapsulate
   SQLAlchemy under a thin abstraction layer to decouple the synchronization
   process from the database toolkit.
