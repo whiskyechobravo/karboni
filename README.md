@@ -135,6 +135,33 @@ List the options of a given command:
 karboni COMMAND --help
 ```
 
+A more complex example, synchronizing from Zotero with some data options enabled
+— format references in APA and Vancouver styles, fetch BibTeX and RIS formats,
+download file attachments, fetch any available full text:
+
+```sh
+karboni sync --style apa --style vancouver --export-format bibtex --export-format ris --files --fulltext
+```
+
+Karboni performs incremental synchronization by default, but for it to work you
+must use the same data options on subsequent invocations of the `karboni sync`
+command. If you wish to re-synchronize with different data options, add the
+`--full` option to your command to require a full synchronization, for example:
+
+```sh
+karboni sync --style apa-5th-edition --full
+```
+
+For the formatting styles available for the `--style` option, refer to the
+[Zotero Style Repository](https://www.zotero.org/styles/).
+
+For the export formats available for the `--export-format` option, refer to the
+[Zotero API documentation on export
+formats](https://www.zotero.org/support/dev/web_api/v3/basics#item_export_formats).
+
+For the locales available for the `--locale` option, refer to the [CSL style
+locales](https://github.com/citation-style-language/locales).
+
 
 ## Python interface
 
