@@ -38,7 +38,6 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "httpx",
     "mypy >= 1.16.1",
     "pre-commit >= 4.2.0",
     "rope >= 1.13.0",
