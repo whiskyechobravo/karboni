@@ -17,7 +17,7 @@ class Config:
         base_url: str = "",
         initial_batch_size: Annotated[int, Range(1, 50)] = 50,
         initial_retry_wait: Annotated[float, Range(1.0, 600.0)] = 2.0,
-        max_requests: Annotated[int, Range(1, 50)] = 20,
+        max_concurrent_requests: Annotated[int, Range(1, 50)] = 20,
         max_errors: Annotated[int, Range(1, 25)] = 10,
     ):
         """
@@ -30,14 +30,14 @@ class Config:
             base_url: Base URL for API requests. Defaults to "https://api.zotero.org".
             initial_batch_size: Number objects to fetch by key in a single request.
             initial_retry_wait: Initial wait time (in seconds) for exponential backoff calculation.
-            max_requests: Maximum number of concurrent API requests at any given time.
+            max_concurrent_requests: Maximum number of concurrent API requests at any given time.
             max_errors: Maximum number of attempts a given API request is allowed.
         """
         validate_range_annotations(
             Config.__init__,
             initial_batch_size=initial_batch_size,
             initial_retry_wait=initial_retry_wait,
-            max_requests=max_requests,
+            max_concurrent_requests=max_concurrent_requests,
             max_errors=max_errors,
         )
 
@@ -54,5 +54,5 @@ class Config:
         }
         self.initial_batch_size = initial_batch_size
         self.initial_retry_wait = initial_retry_wait
-        self.max_requests = max_requests
+        self.max_concurrent_requests = max_concurrent_requests
         self.max_errors = max_errors

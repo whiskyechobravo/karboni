@@ -214,7 +214,7 @@ def clean(files: bool) -> None:
     help="Maximum number of times a failing API request can be retried.",
 )
 @optgroup.option(
-    "--max-requests",
+    "--max-concurrent-requests",
     type=click.IntRange(min=1, max=50),
     default=20,
     help="Maximum number of concurrent API requests at any given time.",
@@ -223,7 +223,7 @@ def sync(
     full: bool,
     initial_batch_size: int,
     initial_retry_wait: float,
-    max_requests: int,
+    max_concurrent_requests: int,
     max_errors: int,
     locale: tuple[str, ...],
     style: tuple[str, ...],
@@ -252,7 +252,7 @@ def sync(
         api_key,
         initial_batch_size=initial_batch_size,
         initial_retry_wait=initial_retry_wait,
-        max_requests=max_requests,
+        max_concurrent_requests=max_concurrent_requests,
         max_errors=max_errors,
         full=full,
         locales=list(locale),
@@ -294,7 +294,7 @@ def sync(
     help="Maximum number of attempts a given API request is allowed.",
 )
 @optgroup.option(
-    "--max-requests",
+    "--max-concurrent-requests",
     type=click.IntRange(min=1, max=50),
     default=20,
     help="Maximum number of concurrent API requests at any given time.",
@@ -302,7 +302,7 @@ def sync(
 def check(
     full: bool,
     initial_retry_wait: float,
-    max_requests: int,
+    max_concurrent_requests: int,
     max_errors: int,
     fulltext: bool,
 ) -> None:
@@ -323,7 +323,7 @@ def check(
         library_prefix,
         api_key,
         initial_retry_wait=initial_retry_wait,
-        max_requests=max_requests,
+        max_concurrent_requests=max_concurrent_requests,
         max_errors=max_errors,
         full=full,
         fulltext=fulltext,

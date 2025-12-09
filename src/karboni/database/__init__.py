@@ -111,7 +111,7 @@ def synchronize(  # noqa: D417
         api_key: Zotero API key for accessing the library.
         initial_batch_size: Number objects to fetch by key in a single request.
         initial_retry_wait: Initial wait time (in seconds) for exponential backoff calculation.
-        max_requests: Maximum number of concurrent API requests at any given time.
+        max_concurrent_requests: Maximum number of concurrent API requests at any given time.
         max_errors: Maximum number of attempts a given API request is allowed.
         full: Force a full synchronization. Defaults to False.
         locales: List of desired locales for labels or to apply to reference formatting.
@@ -159,7 +159,7 @@ def check(  # noqa: D417
         api_key: Zotero API key for accessing the library.
         initial_batch_size: Number objects to fetch by key in a single request.
         initial_retry_wait: Initial wait time (in seconds) for exponential backoff calculation.
-        max_requests: Maximum number of concurrent API requests at any given time.
+        max_concurrent_requests: Maximum number of concurrent API requests at any given time.
         max_errors: Maximum number of attempts a given API request is allowed.
         full: Force a full synchronization. Defaults to False.
         locales: List of desired locales for labels or to apply to reference formatting.

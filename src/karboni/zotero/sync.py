@@ -121,7 +121,7 @@ class Synchronizer:
         # are reset on each new synchronize(). Having them as instance variables
         # avoids constantly passing them around as parameters.
         self._delta = Delta()
-        self._limiter = RequestLimiter(self.zotero_config.max_requests)
+        self._limiter = RequestLimiter(self.zotero_config.max_concurrent_requests)
 
     def _init_sync(self, db: Library, full: bool = False) -> None:
         self._delta = Delta(since=0 if full else db.version() or 0)
@@ -407,8 +407,8 @@ class Synchronizer:
     def _make_http_client(self) -> httpx.AsyncClient:
         """Create an HTTP client configured for Zotero API requests."""
         return make_http_client(
-            max_connections=self.zotero_config.max_requests,
-            max_keepalive_connections=max(1, self.zotero_config.max_requests // 2),
+            max_connections=self.zotero_config.max_concurrent_requests,
+            max_keepalive_connections=max(1, self.zotero_config.max_concurrent_requests // 2),
         )
 
     async def check(self, full: bool = False) -> None:
@@ -635,7 +635,7 @@ class Synchronizer:
                 process_options={
                     "initial-batch-size": self.zotero_config.initial_batch_size,
                     "initial-retry-wait": self.zotero_config.initial_retry_wait,
-                    "max-requests": self.zotero_config.max_requests,
+                    "max-concurrent-requests": self.zotero_config.max_concurrent_requests,
                     "max-errors": self.zotero_config.max_errors,
                 },
                 updated_item_count=len(item_keys),
