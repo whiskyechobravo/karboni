@@ -110,12 +110,12 @@ class Synchronizer:
         self.zotero_config = Config(**kwargs)
 
         # Data options.
-        self.locales = locales or ["en-US"]
-        self.styles = styles or []
-        self.export_formats = export_formats or []
+        self.locales = list(set(locales or ["en-US"]))  # Going through a set to remove duplicates.
+        self.styles = list(set(styles or []))
+        self.export_formats = list(set(export_formats or []))
         self.fulltext = fulltext
         self.files = files
-        self.media_types = media_types or []
+        self.media_types = list(set(media_types or []))
 
         # Variables shared between various methods during synchronization. These
         # are reset on each new synchronize(). Having them as instance variables
@@ -145,19 +145,19 @@ class Synchronizer:
 
             last_data_options = last_sync.get("data_options", {})
 
-            # Using async here not for speed but to check each element independently,
-            # and raise all applicable exceptions!
+            # Using async here not for speed but to check each element independently, and raise all
+            # applicable exceptions (not just the first one encountered).
             async with create_task_group() as tg:
                 # fmt: off
                 tg.start_soon(compare, "library_id", last_sync.get("library_id"), self.zotero_config.library_id)
                 tg.start_soon(compare, "library_prefix", last_sync.get("library_prefix"), self.zotero_config.library_prefix)
                 if check_data_options:
-                    tg.start_soon(compare, "locales", set(last_data_options.get("locales", [])), set(self.locales))
-                    tg.start_soon(compare, "styles", set(last_data_options.get("styles", [])), set(self.styles))
-                    tg.start_soon(compare, "export_formats", set(last_data_options.get("export_formats", [])), set(self.export_formats))
+                    tg.start_soon(compare, "locales", last_data_options.get("locales", []), self.locales)
+                    tg.start_soon(compare, "styles", last_data_options.get("styles", []), self.styles)
+                    tg.start_soon(compare, "export_formats", last_data_options.get("export_formats", []), self.export_formats)
                     tg.start_soon(compare, "fulltext", last_data_options.get("fulltext"), self.fulltext)
                     tg.start_soon(compare, "files", last_data_options.get("files"), self.files)
-                    tg.start_soon(compare, "media_types", last_data_options.get("media_types"), self.media_types)
+                    tg.start_soon(compare, "media_types", last_data_options.get("media_types", []), self.media_types)
                 # fmt: on
 
     def _get_backoff_duration_from_response(self, response: httpx.Response) -> float:
