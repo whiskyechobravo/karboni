@@ -2,7 +2,7 @@
 
 import datetime
 import logging
-from collections.abc import Iterable, Iterator
+from collections.abc import Iterable, Iterator, Sequence
 from itertools import islice
 from typing import Any, TypeVar
 
@@ -140,6 +140,15 @@ class Synchronizer:
                 raise IncrementalSyncStatusError
 
             async def compare(option: str, db_value: Any, current_value: Any) -> None:
+                if (
+                    not (isinstance(db_value, str) or isinstance(current_value, str))
+                    and isinstance(db_value, Sequence)
+                    and isinstance(current_value, Sequence)
+                ):
+                    # Sort sequences before comparison.
+                    db_value = sorted(db_value)
+                    current_value = sorted(current_value)
+
                 if current_value != db_value:
                     raise IncrementalSyncInconsistencyError(option, db_value, current_value)
 
