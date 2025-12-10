@@ -19,8 +19,11 @@ logger = logging.getLogger(__name__)
 
 def initialize(database_url: str) -> None:
     """Initialize the mirror database."""
-    engine = create_engine(database_url)
-    Base.metadata.create_all(engine)
+    try:
+        engine = create_engine(database_url)
+        Base.metadata.create_all(engine)
+    finally:
+        engine.dispose()
 
 
 def clean(database_url: str, data_path: Path, files: bool = False) -> None:
@@ -32,20 +35,23 @@ def clean(database_url: str, data_path: Path, files: bool = False) -> None:
         data_path: Path to store files.
         files: Whether to delete the file attachments locally. Defaults to False.
     """
-    engine = create_engine(database_url)
-    Base.metadata.drop_all(engine)
+    try:
+        engine = create_engine(database_url)
+        Base.metadata.drop_all(engine)
 
-    if files:
-        attachments_path = data_path / "attachments"
-        if attachments_path.exists() and attachments_path.is_dir():
-            for file_path in attachments_path.iterdir():
-                if file_path.is_file():
-                    try:
-                        file_path.unlink()
-                    except OSError as exc:
-                        logger.warning(
-                            "Failed to delete file attachment: %s. %s", file_path.name, exc
-                        )
+        if files:
+            attachments_path = data_path / "attachments"
+            if attachments_path.exists() and attachments_path.is_dir():
+                for file_path in attachments_path.iterdir():
+                    if file_path.is_file():
+                        try:
+                            file_path.unlink()
+                        except OSError as exc:
+                            logger.warning(
+                                "Failed to delete file attachment: %s. %s", file_path.name, exc
+                            )
+    finally:
+        engine.dispose()
 
 
 async def _async_execute(

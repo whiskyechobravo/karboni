@@ -3,13 +3,10 @@ import logging
 from collections.abc import Callable
 from functools import wraps
 from types import TracebackType
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, TypeVar
 
 from sqlalchemy import delete, inspect, select, update
 from sqlalchemy.orm import Session
-
-if TYPE_CHECKING:
-    from sqlalchemy.orm.session import SessionTransaction
 
 from karboni import __version__
 from karboni.database.engine import create_engine
@@ -76,33 +73,33 @@ class Library:
 
     def __init__(self, database_url: str, readonly: bool = False) -> None:
         self._readonly = readonly
-        self._engine = create_engine(database_url)
+        self._database_url = database_url
 
-        self._check_database(database_url)
+        logger.debug("Open database session")
+        self._engine = create_engine(self._database_url)
 
-        if readonly:
+        self._check_database()
+
+        if self._readonly:
             self._session = Session(self._engine, autoflush=False, autocommit=False)
         else:
             self._session = Session(self._engine)
-        self._tx: SessionTransaction | None = None
 
-    def _check_database(self, database_url: str) -> None:
+        if not self._readonly:
+            self._session.begin()
+
+    def _check_database(self) -> None:
         """Check if the database has been initialized."""
         # Use SQLAlchemy's introspection to check if any tables exist.
         if not inspect(self._engine).get_table_names():
-            raise DatabaseNotInitializedError(database_url)
+            raise DatabaseNotInitializedError(self._database_url)
 
     @property
     def readonly(self) -> bool:
         return self._readonly
 
     def __enter__(self) -> "Library":
-        """
-        Enter the session context.
-
-        This allows usage in a with block.
-        """
-        self.open()
+        """Enter the session context. This allows usage in a with block."""
         return self
 
     def __exit__(
@@ -124,16 +121,11 @@ class Library:
                 self.commit()
         self.close()
 
-    def open(self) -> None:
-        """Open the session."""
-        logger.debug("Open database session")
-        if not self._readonly:
-            self._tx = self._session.begin()
-
     def close(self) -> None:
         """Close the session, committing any pending transactions and releasing any resources."""
         logger.debug("Close database session")
         self._session.close()
+        self._engine.dispose()
 
     @write_operation
     def commit(self) -> None:
@@ -624,6 +616,7 @@ class Library:
         # (and thus show directly under the trashed item), but does not causes the attachment to get
         # the trashed flag. Not trashing the child might force Karboni users to perform additional
         # checks to distinguish trashed attachments.
+        # TODO: Deleting trashed files should probably be optional.
         stmt = (
             select(ItemFile.item_key)
             .join(Item, Item.item_key == ItemFile.item_key)
