@@ -80,14 +80,6 @@ module = ["anyio.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = ["httpx.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["sqlalchemy.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
 module = ["click.*"]
 ignore_missing_imports = true
 
@@ -97,6 +89,14 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["dotenv.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["httpx.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["sqlalchemy.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
