@@ -531,16 +531,32 @@ class Synchronizer:
                 ):
                     raise LibraryAlreadyInSyncError
 
-                # Create getter and its output stream for items that are actual references and not
-                # trashed. This output will determine which formatted references and export formats
-                # will be fetched because, e.g., we don't need to formatted references for notes or
-                # trashed items.
+                # Create getter and its output stream for items that are actual bibliographic
+                # references and not trashed. This output will determine which formatted references
+                # and export formats will be fetched because, e.g., we don't need to formatted
+                # references for notes or trashed items.
                 # fmt: off
                 ref_item_types = [t for t in item_types if t not in ("note", "attachment", "annotation")]
                 ref_items_since, ref_items_stream = stream_result(self._process)(SelectedItemsSince, db, http, ref_item_types)
                 # fmt: on
 
                 async with create_task_group() as tg:
+                    if item_types:
+                        # Update item types in database. The Zotero API doesn't apply versioning to
+                        # item types, thus we systematically update them whenever the library has
+                        # changes. Because we haven't established foreign key relationships between
+                        # items and item types, we can update them concurrently.
+                        for locale in self.locales:
+                            tg.start_soon(self._process, ItemTypesLocale, db, http, locale)
+                        for item_type in item_types:
+                            tg.start_soon(self._process, ItemTypeFields, db, http, item_type)
+                            tg.start_soon(self._process, ItemTypeCreatorTypes, db, http, item_type)
+                            for locale in self.locales:
+                                # fmt: off
+                                tg.start_soon(self._process, ItemTypeFieldsLocale, db, http, item_type, locale)
+                                tg.start_soon(self._process, ItemTypeCreatorTypesLocale, db, http, item_type, locale)
+                                # fmt: on
+
                     if self.styles or self.export_formats:
                         # Get items that are actual references and not trashed.
                         tg.start_soon(ref_items_since)
@@ -550,24 +566,6 @@ class Synchronizer:
                         # process items only after collections have been fully synchronized. Hence
                         # the consecutive task group.
                         tg.start_soon(self._batch_process, ItemsBatch, db, http, item_keys)
-
-                        if item_types:
-                            # Update item types in database.
-                            #
-                            # We haven't established foreign key constraints in the relation from
-                            # items to item types, thus we're able to update them concurrently. We
-                            # only do it when there are actual item changes because the Zotero API
-                            # doesn't implement versioning on item types.
-                            # fmt: off
-                            for locale in self.locales:
-                                tg.start_soon(self._process, ItemTypesLocale, db, http, locale)
-                            for item_type in item_types:
-                                tg.start_soon(self._process, ItemTypeFields, db, http, item_type)
-                                tg.start_soon(self._process, ItemTypeCreatorTypes, db, http, item_type)
-                                for locale in self.locales:
-                                    tg.start_soon(self._process, ItemTypeFieldsLocale, db, http, item_type, locale)
-                                    tg.start_soon(self._process, ItemTypeCreatorTypesLocale, db, http, item_type, locale)
-                            # fmt: on
 
                     if self.styles or self.export_formats:
                         ref_item_keys = await ref_items_stream.receive()  # noqa: F841
