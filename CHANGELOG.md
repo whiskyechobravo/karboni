@@ -4,8 +4,7 @@
 
 Bug fixes:
 
-- Fix item type information lost in incremental synchronization scenarios where
-  the only changes involved collections, full texts, searches, or deletions.
+- Fix item type information lost in some incremental sync scenarios.
 - Fix database engine connection not cleanly disposed of after use.
 - Fix sync parameter consistency check sometimes failing.
 - Fix crash when passing duplicate values to locales, styles, export_formats or
