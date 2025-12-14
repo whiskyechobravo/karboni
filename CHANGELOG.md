@@ -4,6 +4,7 @@
 
 Bug fixes:
 
+- Fix subcollections not deleted when a collection gets deleted.
 - Fix item type information lost in some incremental sync scenarios.
 - Fix database engine connection not cleanly disposed of after use.
 - Fix sync parameter consistency check sometimes failing.
