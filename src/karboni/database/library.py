@@ -2,7 +2,6 @@ import datetime
 import logging
 from collections.abc import Callable
 from functools import wraps
-from itertools import chain
 from types import TracebackType
 from typing import Any, TypeVar
 
@@ -322,7 +321,7 @@ class Library:
             )
             self._session.merge(collection_object)
 
-    def _find_subcollection(self, collection_key: str) -> list[str]:
+    def find_subcollection(self, collection_key: str) -> list[str]:
         descendants = []
         queue = [collection_key]
         while queue:
@@ -335,12 +334,7 @@ class Library:
 
     @write_operation
     def bulk_delete_collections(self, keys: list[str]) -> None:
-        # When a collection is deleted, Zotero doesn't keep track of its deleted subcollections,
-        # thus we must find them, if any, and add them to the deletion list.
-        subcollections = chain(*[self._find_subcollection(key) for key in keys])
-        self._bulk_delete_objects(
-            Collection, "collection_key", list(set(keys) | set(subcollections))
-        )
+        self._bulk_delete_objects(Collection, "collection_key", keys)
 
     @write_operation
     def bulk_insert_collections(self, collections: list[Any]) -> None:
