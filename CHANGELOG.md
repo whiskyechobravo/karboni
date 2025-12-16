@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0alpha1 (2025-12-16)
 
 Bug fixes:
 
@@ -13,8 +13,9 @@ Bug fixes:
 
 Other changes:
 
-- Rename max_requests option to max_concurrent_requests.
+- Rename `max_requests` option to `max_concurrent_requests`.
 - Remove unused optional package dependencies.
+- Standardize the interfaces of exception classes.
 - Add documentation.
 
 
