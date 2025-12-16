@@ -132,6 +132,9 @@ def synchronize(  # noqa: D417
         files: Whether to fetch file attachments (if any). Defaults to False.
         media_types: List of accepted media types for file attachments. If None, files are accepted
                      regardless of media type. Ignored if files is False.
+
+    Returns:
+        True if the synchronization completed successfully, False otherwise.
     """
     # Note: kwargs not unpacked because run() only accepts positional arguments.
     return run(
@@ -180,6 +183,9 @@ def check(  # noqa: D417
         files: Whether to fetch file attachments (if any). Defaults to False.
         media_types: List of accepted media types for file attachments. If None, files are accepted
                      regardless of media type. Ignored if files is False.
+
+    Returns:
+        True if the check completed successfully, False otherwise.
     """
     # Note: kwargs not unpacked because run() only accepts positional arguments.
     return run(
