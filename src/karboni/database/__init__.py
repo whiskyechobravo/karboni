@@ -1,6 +1,7 @@
 """Main operations for managing the mirror database."""
 
 import logging
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -30,10 +31,12 @@ def clean(database_url: str, data_path: Path, files: bool = False) -> None:
     """
     Clear the mirror database.
 
+    This drops all database tables. If files is True, also deletes the files.
+
     Args:
         database_url: Connection URL for the mirror database.
-        data_path: Path to store files.
-        files: Whether to delete the file attachments locally. Defaults to False.
+        data_path: Path where files are stored locally.
+        files: Whether to delete the local file attachments. Defaults to False.
     """
     try:
         engine = create_engine(database_url)
@@ -41,15 +44,13 @@ def clean(database_url: str, data_path: Path, files: bool = False) -> None:
 
         if files:
             attachments_path = data_path / "attachments"
-            if attachments_path.exists() and attachments_path.is_dir():
-                for file_path in attachments_path.iterdir():
-                    if file_path.is_file():
-                        try:
-                            file_path.unlink()
-                        except OSError as exc:
-                            logger.warning(
-                                "Failed to delete file attachment: %s. %s", file_path.name, exc
-                            )
+            if attachments_path.is_dir():
+                try:
+                    shutil.rmtree(attachments_path)
+                except OSError as exc:
+                    logger.warning(
+                        "Failed to delete file attachments directory: %s. %s", attachments_path, exc
+                    )
     finally:
         engine.dispose()
 

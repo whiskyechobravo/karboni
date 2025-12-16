@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+Other changes:
+
+- Simplify file attachments cleaning code.
+
+
 ## 0.1.0alpha1 (2025-12-16)
 
 Bug fixes:
