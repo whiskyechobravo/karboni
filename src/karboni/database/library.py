@@ -31,7 +31,7 @@ from karboni.database.schema import (
     Search,
     SyncHistory,
 )
-from karboni.exceptions import DatabaseNotInitializedError, ReadOnlyError
+from karboni.exceptions import DatabaseNotInitializedError
 from karboni.typing import VersionType
 
 logger = logging.getLogger(__name__)
@@ -40,12 +40,13 @@ F = TypeVar("F", bound=Callable[..., Any])
 
 
 def write_operation(func: F) -> F:
-    """Raise ReadOnlyError if the method is called while database in read-only mode."""
+    """Raises RuntimeError if F is called while database in read-only mode."""
 
     @wraps(func)
     def wrapper(self: "Library", *args: Any, **kwargs: Any) -> Any:
         if self._readonly:
-            raise ReadOnlyError
+            msg = "Cannot perform write operation in read-only mode"
+            raise RuntimeError(msg)
         return func(self, *args, **kwargs)
 
     return wrapper  # type: ignore[return-value]

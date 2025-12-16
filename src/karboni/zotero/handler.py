@@ -11,10 +11,10 @@ from anyio import Path
 
 from karboni.database.library import Library
 from karboni.exceptions import (
-    FileAlreadyInSyncError,
-    FileDecompressionError,
-    FileIntegrityError,
-    FileWriteError,
+    SkippedFileAlreadyInSyncError,
+    SkippedFileDecompressionError,
+    SkippedFileIntegrityError,
+    SkippedFileWriteError,
 )
 from karboni.zotero.config import Config
 from karboni.zotero.delta import Delta
@@ -704,7 +704,7 @@ class ItemFileDownload(Handler):
                     self.item_file["item_key"],
                     self.db.FILE_DOWNLOAD_STATUS_OK,
                 )
-                raise FileAlreadyInSyncError(self.item_file["item_key"])
+                raise SkippedFileAlreadyInSyncError(self.item_file["item_key"])
             logger.debug("Downloading updated attachment %s", self.item_file["item_key"])
         else:
             logger.debug("Downloading new attachment %s", self.item_file["item_key"])
@@ -747,7 +747,7 @@ class ItemFileDownload(Handler):
                     self.item_file["item_key"],
                     self.db.FILE_DOWNLOAD_STATUS_ERROR,
                 )
-                raise FileIntegrityError(self.item_file["item_key"])
+                raise SkippedFileIntegrityError(self.item_file["item_key"])
 
         content = self._unzip(response.content) if decompress else response.content
 
@@ -763,7 +763,7 @@ class ItemFileDownload(Handler):
                 self.item_file["item_key"],
                 self.db.FILE_DOWNLOAD_STATUS_ERROR,
             )
-            raise FileWriteError(self.item_file["item_key"], exc) from exc
+            raise SkippedFileWriteError(self.item_file["item_key"]) from exc
 
         else:
             self.db.update_item_file_download_status(
@@ -780,4 +780,4 @@ class ItemFileDownload(Handler):
             msg = "ZIP contains no files"
             raise ValueError(msg)  # noqa: TRY301
         except (zipfile.BadZipFile, ValueError, OSError) as exc:
-            raise FileDecompressionError(self.item_file["item_key"], exc) from exc
+            raise SkippedFileDecompressionError(self.item_file["item_key"]) from exc

@@ -13,12 +13,12 @@ from karboni.async_utils import RequestLimiter, stream_result
 from karboni.database.library import Library
 from karboni.exceptions import (
     BatchSizeError,
-    FileAlreadyInSyncError,
     IncrementalSyncInconsistencyError,
     IncrementalSyncStatusError,
     LibraryAlreadyInSyncError,
     LibraryVersionChangeError,
     SkippedError,
+    SkippedFileAlreadyInSyncError,
     TooManyFailuresError,
 )
 from karboni.http import make_http_client
@@ -303,7 +303,7 @@ class Synchronizer:
                     )
 
                 except SkippedError as exc:
-                    if isinstance(exc, FileAlreadyInSyncError):
+                    if isinstance(exc, SkippedFileAlreadyInSyncError):
                         logger.debug(exc)
                     else:
                         # Issue deserves a warning, but shouldn't interrupt the sync process.
