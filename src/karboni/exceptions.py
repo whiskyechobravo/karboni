@@ -43,7 +43,7 @@ class LibraryPrefixError(SyncError):
 
 class LibraryAlreadyInSyncError(SyncError):
     def get_message(self) -> str:
-        return "The Zotero library is already up-to-date"
+        return "The database is already up-to-date"
 
 
 class LibraryVersionChangeError(SyncError):
