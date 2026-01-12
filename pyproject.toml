@@ -73,30 +73,15 @@ source = [
 python_version = "3.14"
 strict = true
 mypy_path = "src"
-files = ["src"]
 
 [[tool.mypy.overrides]]
-module = ["anyio.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["click.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["click-option-group.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["dotenv.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["httpx.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["sqlalchemy.*"]
+module = [
+    "anyio.*",
+    "click.*",
+    "click-option-group.*",
+    "httpx.*",
+    "sqlalchemy.*",
+]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
