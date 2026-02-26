@@ -5,7 +5,7 @@ from typing import Any
 
 import click
 from click_option_group import optgroup
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
 from karboni import database
 from karboni.logging_utils import setup_logging
@@ -105,7 +105,7 @@ def get_zotero_credentials() -> tuple[str, str, str]:
 )
 def cli(debug: bool) -> None:
     """Mirror a Zotero library into a SQL database."""
-    load_dotenv()
+    load_dotenv(find_dotenv(usecwd=True))
     setup_logging(debug)
 
 

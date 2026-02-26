@@ -100,10 +100,14 @@ under your current directory, and use SQLite as the relational database. You may
 change those defaults by setting the following variables in your `.env` file:
 
 - `KARBONI_DATA_PATH`. Defaults to
-  `./data/karboni/ZOTERO_LIBRARY_PREFIX-ZOTERO_LIBRARY_ID/`.
+  `./data/karboni/ZOTERO_LIBRARY_PREFIX-ZOTERO_LIBRARY_ID/`. If the directory
+  does not already exists, Karboni will create it.
 - `KARBONI_DATABASE_URL`. Defaults to
   `sqlite:///data/karboni/ZOTERO_LIBRARY_PREFIX-ZOTERO_LIBRARY_ID/library.sqlite`.
-  For other relational databases, see the [SQLAlchemy documentation on database
+  When using SQLite, the directory specified in the database URL must either
+  exist prior to running the Karboni command, or match the directory specified
+  by `KARBONI_DATA_PATH`. For other relational databases, see the [SQLAlchemy
+  documentation on database
   URLs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls).
   While SQLite support is readily available through the Python standard library,
   other database backends usually require that you install additional Python

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Bug fixes:
+
+- Fix `.env` file not looked up in arbitrary working directory.
+
 Other changes:
 
 - Replace variables `Library.FILE_DOWNLOAD_STATUS_*` with enum `Library.FileDownloadStatus`.
