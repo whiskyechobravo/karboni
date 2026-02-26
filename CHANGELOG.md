@@ -4,6 +4,7 @@
 
 Other changes:
 
+- Replace variables `Library.FILE_DOWNLOAD_STATUS_*` with enum `Library.FileDownloadStatus`.
 - Simplify file attachments cleaning code.
 
 

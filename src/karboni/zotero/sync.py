@@ -727,19 +727,19 @@ class Synchronizer:
                 logger.debug("Deleted file attachment: %s", file_path)
                 db.update_item_file_download_status(
                     item_key,
-                    db.FILE_DOWNLOAD_STATUS_DELETED,
+                    db.FileDownloadStatus.DELETED,
                 )
 
             except OSError as exc:
                 logger.warning("Failed to delete file attachment: %s. %s", file_path, exc)
                 db.update_item_file_download_status(
                     item_key,
-                    db.FILE_DOWNLOAD_STATUS_ERROR,
+                    db.FileDownloadStatus.ERROR,
                 )
         else:
             # The item might not even have been an attachment, but if its key is present in the
             # ItemFile table, mark the file as deleted.
             db.update_item_file_download_status(
                 item_key,
-                db.FILE_DOWNLOAD_STATUS_DELETED,
+                db.FileDownloadStatus.DELETED,
             )

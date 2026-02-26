@@ -86,7 +86,7 @@ Replace `your_library_id` with the identifier of your library. For a personal
 library the value is your user ID, as found on
 https://www.zotero.org/settings/keys (you must be logged-in). For a group
 library this value is the group ID of the library, as found in the URL of the
-library (e.g., the groupID of the library at
+library (e.g., the group ID of the library at
 `https://www.zotero.org/groups/1234567/example` is `1234567`).
 
 Replace `your_api_key` with your Zotero API key. You may create one for your

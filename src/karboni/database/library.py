@@ -1,6 +1,7 @@
 import datetime
 import logging
 from collections.abc import Callable
+from enum import StrEnum
 from functools import wraps
 from types import TracebackType
 from typing import Any, TypeVar
@@ -61,16 +62,12 @@ class Library:
     specifics.
     """
 
-    # Status "unavailable" is for files that Zotero is unable to provide.
-    FILE_DOWNLOAD_STATUS_UNAVAILABLE = "unavailable"
-    # Status "unknown" is for files that need to be updated.
-    FILE_DOWNLOAD_STATUS_UNKNOWN = "unknown"
-    # Status "ok" is for files that have been successfully fetched.
-    FILE_DOWNLOAD_STATUS_OK = "ok"
-    # Status "error" is for files whose fetching or saving has failed.
-    FILE_DOWNLOAD_STATUS_ERROR = "error"
-    # Status "deleted" is for files that are known to have been removed locally.
-    FILE_DOWNLOAD_STATUS_DELETED = "deleted"
+    class FileDownloadStatus(StrEnum):
+        UNAVAILABLE = "unavailable"  # File that Zotero is unable to provide.
+        UNKNOWN = "unknown"  # File not required and had no fetch attempt.
+        OK = "ok"  # File has been successfully fetched.
+        ERROR = "error"  # File fetching or saving has failed.
+        DELETED = "deleted"  # File is known to have been removed locally.
 
     def __init__(self, database_url: str, readonly: bool = False) -> None:
         self._readonly = readonly
@@ -466,9 +463,9 @@ class Library:
                 and item["data"].get("linkMode") != "linked_file"
             ):
                 if item["data"].get("md5") is None:
-                    download_status = self.FILE_DOWNLOAD_STATUS_UNAVAILABLE
+                    download_status = self.FileDownloadStatus.UNAVAILABLE
                 else:
-                    download_status = self.FILE_DOWNLOAD_STATUS_UNKNOWN
+                    download_status = self.FileDownloadStatus.UNKNOWN
 
                 file_objects.append(
                     {
@@ -610,8 +607,8 @@ class Library:
                 Item.trashed.is_not(True),
                 ItemFile.download_status.in_(
                     [
-                        self.FILE_DOWNLOAD_STATUS_UNKNOWN,
-                        self.FILE_DOWNLOAD_STATUS_ERROR,
+                        self.FileDownloadStatus.UNKNOWN,
+                        self.FileDownloadStatus.ERROR,
                     ]
                 ),
             )
@@ -636,8 +633,8 @@ class Library:
                 Item.trashed.is_(True),
                 ~ItemFile.download_status.in_(
                     [
-                        self.FILE_DOWNLOAD_STATUS_DELETED,
-                        self.FILE_DOWNLOAD_STATUS_UNAVAILABLE,
+                        self.FileDownloadStatus.DELETED,
+                        self.FileDownloadStatus.UNAVAILABLE,
                     ]
                 ),
             )

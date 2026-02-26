@@ -702,7 +702,7 @@ class ItemFileDownload(Handler):
             if current_md5 == self.item_file["md5"]:
                 self.db.update_item_file_download_status(
                     self.item_file["item_key"],
-                    self.db.FILE_DOWNLOAD_STATUS_OK,
+                    self.db.FileDownloadStatus.OK,
                 )
                 raise SkippedFileAlreadyInSyncError(self.item_file["item_key"])
             logger.debug("Downloading updated attachment %s", self.item_file["item_key"])
@@ -745,7 +745,7 @@ class ItemFileDownload(Handler):
             if downloaded_md5 != expected_md5:
                 self.db.update_item_file_download_status(
                     self.item_file["item_key"],
-                    self.db.FILE_DOWNLOAD_STATUS_ERROR,
+                    self.db.FileDownloadStatus.ERROR,
                 )
                 raise SkippedFileIntegrityError(self.item_file["item_key"])
 
@@ -761,14 +761,14 @@ class ItemFileDownload(Handler):
         except OSError as exc:
             self.db.update_item_file_download_status(
                 self.item_file["item_key"],
-                self.db.FILE_DOWNLOAD_STATUS_ERROR,
+                self.db.FileDownloadStatus.ERROR,
             )
             raise SkippedFileWriteError(self.item_file["item_key"]) from exc
 
         else:
             self.db.update_item_file_download_status(
                 self.item_file["item_key"],
-                self.db.FILE_DOWNLOAD_STATUS_OK,
+                self.db.FileDownloadStatus.OK,
             )
 
     def _unzip(self, content: bytes) -> bytes:
