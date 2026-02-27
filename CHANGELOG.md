@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.0alpha2 (2026-02-27)
 
 Bug fixes:
 
