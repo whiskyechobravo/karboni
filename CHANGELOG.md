@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+Bug fixes:
+
+- Fix sync crashing with export format `csljson`.
+
+
 ## 0.1.0alpha2 (2026-02-27)
 
 Bug fixes:

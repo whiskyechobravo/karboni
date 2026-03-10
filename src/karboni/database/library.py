@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 from collections.abc import Callable
 from enum import StrEnum
@@ -504,7 +505,13 @@ class Library:
     def insert_items_export_format(self, items: list[Any], export_format: str) -> None:
         """Insert the specified item export formats."""
         obj = [
-            {"item_key": item["key"], "format": export_format, "content": item[export_format]}
+            {
+                "item_key": item["key"],
+                "format": export_format,
+                "content": item[export_format]
+                if isinstance(item[export_format], str)
+                else json.dumps(item[export_format]),
+            }
             for item in items
         ]
 

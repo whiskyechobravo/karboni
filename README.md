@@ -150,10 +150,12 @@ download file attachments, fetch any available full text:
 karboni sync --style apa --style vancouver --export-format bibtex --export-format ris --files --fulltext
 ```
 
-Karboni performs incremental synchronization by default, but for it to work you
-must use the same data options on subsequent invocations of the `karboni sync`
-command. If you wish to re-synchronize with different data options, add the
-`--full` option to your command to require a full synchronization. For example:
+Once an initial synchronization has completed, subsequent invocations of the
+`karboni sync` command will perform incremental synchronization by default,
+i.e., fetching just the modified data from Zotero. However, that only works if
+you use the same data options as on the initial synchronization. To change the
+data options, add the `--full` option to force a full synchronization. For
+example:
 
 ```sh
 karboni sync --style apa-5th-edition --full
@@ -214,6 +216,6 @@ Here are some of the design choices that have guided the development of Karboni:
   single transaction (to allow rollback in case of failure), which means the
   database can remain locked for some time. To ensure availability during
   synchronization, use a database system that has more advanced locking
-  mechanisms (such as PostgreSQL or MySQL).
+  mechanisms (such as PostgreSQL or MariaDB/MySQL).
 - Python 3.11+ is required (it facilitates exception handling with asynchronous
   tasks).
