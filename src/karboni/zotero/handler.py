@@ -191,7 +191,7 @@ class ItemTypes(SinceHandler):
 
     async def process_response(self, response: httpx.Response) -> list[str]:
         data = response.json()
-        self.db.update_item_types(data)
+        self.db.merge_item_types(data)
         return [t["itemType"] for t in data]
 
     def empty_result(self) -> list[str]:
@@ -523,7 +523,7 @@ class CollectionsBatch(BatchHandler):
         )
 
     async def process_response(self, response: httpx.Response) -> None:
-        self.db.update_collections(response.json())
+        self.db.merge_collections(response.json())
         self.done.extend(self.batch_keys)
 
 
@@ -539,7 +539,7 @@ class SearchesBatch(BatchHandler):
         )
 
     async def process_response(self, response: httpx.Response) -> None:
-        self.db.update_searches(response.json())
+        self.db.merge_searches(response.json())
         self.done.extend(self.batch_keys)
 
 
@@ -555,7 +555,7 @@ class ItemsBatch(BatchHandler):
         )
 
     async def process_response(self, response: httpx.Response) -> None:
-        self.db.update_items(response.json())
+        self.db.merge_items(response.json())
         self.done.extend(self.batch_keys)
 
 

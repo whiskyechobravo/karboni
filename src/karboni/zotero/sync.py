@@ -596,6 +596,8 @@ class Synchronizer:
                         # fmt: on
 
                     if fulltext_item_keys:
+                        # Bulk delete any matching entries, to prevent conflicts on inserts.
+                        db.bulk_delete_items_fulltext(fulltext_item_keys)
                         for item_key in fulltext_item_keys:
                             tg.start_soon(self._process, ItemFulltext, db, http, item_key)
 
@@ -603,12 +605,12 @@ class Synchronizer:
 
             # Delete items, collections, and searches that Zotero says have been permanently
             # deleted. We don't know anything about those except their keys. We delete them if they
-            # exist, cascading to dependent tables.
+            # exist.
             if deleted_items := deleted_objects.get("items", []):
+                logger.debug("Deleting %d item(s)", len(deleted_items))
                 # Store keys of deleted items.
                 db.insert_deleted_items(deleted_items)
-                # Delete the items.
-                logger.debug("Deleting %d item(s)", len(deleted_items))
+                # Delete the items, cascading to related tables.
                 db.bulk_delete_items(deleted_items)
             if deleted_collections := deleted_objects.get("collections", []):
                 # The Zotero API doesn't report deleted subcollections, thus we must find them, if
@@ -618,16 +620,16 @@ class Synchronizer:
                     *[db.find_subcollection(key) for key in deleted_collections],
                 )
                 deleted_collections = list(set(deleted_collections))  # Remove potential duplicates.
+                logger.debug("Deleting %d collection(s)", len(deleted_collections))
                 # Store keys of deleted collections.
                 db.insert_deleted_collections(deleted_collections)
                 # Delete the collections.
-                logger.debug("Deleting %d collection(s)", len(deleted_collections))
                 db.bulk_delete_collections(deleted_collections)
             if deleted_searches := deleted_objects.get("searches", []):
+                logger.debug("Deleting %d search(es)", len(deleted_searches))
                 # Store keys of deleted searches.
                 db.insert_deleted_searches(deleted_searches)
                 # Delete the searches.
-                logger.debug("Deleting %d search(es)", len(deleted_searches))
                 db.bulk_delete_searches(deleted_searches)
 
             # Add synchronization history entry.

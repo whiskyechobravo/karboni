@@ -4,6 +4,7 @@
 
 Bug fixes:
 
+- Fix sync crashing when an item's fulltext has changed but not the item itself.
 - Fix sync crashing with export format `csljson`.
 
 

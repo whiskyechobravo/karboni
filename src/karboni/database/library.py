@@ -208,13 +208,11 @@ class Library:
         self._session.execute(stmt)
 
     @write_operation
-    def update_item_types(self, item_types: list[Any]) -> None:
+    def merge_item_types(self, item_types: list[Any]) -> None:
         """
         Insert or update the specified item types.
 
-        Updating implies that data in related tables will be considered as
-        outdated and thus get deleted. Related data must then be re-inserted through
-        separate operations.
+        Performs consecutive bulk deletions and insertions for better performance.
         """
         logger.debug("Update %d item type(s)", len(item_types))
         self.bulk_delete_item_types(item_types)
@@ -297,7 +295,7 @@ class Library:
             self._session.bulk_insert_mappings(ItemTypeCreatorTypeLocale, obj)  # type: ignore[arg-type]
 
     @write_operation
-    def update_collections(self, collections: list[Any]) -> None:
+    def merge_collections(self, collections: list[Any]) -> None:
         """
         Insert or update the specified collections.
 
@@ -357,13 +355,11 @@ class Library:
             self._session.bulk_insert_mappings(Collection, collection_objects)  # type: ignore[arg-type]
 
     @write_operation
-    def update_searches(self, searches: list[Any]) -> None:
+    def merge_searches(self, searches: list[Any]) -> None:
         """
         Insert or update the specified searches.
 
-        Updating implies that data in related tables will be considered as
-        outdated and thus get deleted. Related data must be re-inserted through
-        separate operations.
+        Performs consecutive bulk deletions and insertions for better performance.
         """
         # Use fast bulk operations instead of individual merges.
         keys = [search["key"] for search in searches]
@@ -395,22 +391,48 @@ class Library:
             self._session.bulk_insert_mappings(Search, search_objects)  # type: ignore[arg-type]
 
     @write_operation
-    def update_items(self, items: list[Any]) -> None:
+    def merge_items(self, items: list[Any]) -> None:
         """
         Insert or update the specified items.
 
-        Updating implies that data in related tables will be considered as
-        outdated and thus get deleted. Related data must be re-inserted through
-        separate operations.
+        Performs consecutive bulk deletions and insertions on related tables for better performance.
+        Related data such as ItemBib and ItemExportFormat must be re-inserted through separate
+        operations.
+
+        However, slower individual merge updates are used for the Item table, in order to avoid
+        cascade deletion of related ItemFulltext entries. The latter cannot be deleted here because
+        items and their fulltext have separate lifecycles in the Zotero API.
         """
-        # Use fast bulk operations instead of individual merges.
         keys = [item["key"] for item in items]
         logger.debug("Update %d items: %s", len(items), repr(keys))
-        self.bulk_delete_items(keys)
-        self.bulk_insert_items(items)
+
+        # Bulk delete related tables first.
+        self._bulk_delete_items_related(keys)
+
+        # Merge items individually.
+        for item in items:
+            item_object = Item(
+                item_key=item["key"],
+                version=item["version"],
+                item_type=item["data"].get("itemType", ""),
+                parent_item=item["data"].get("parentItem"),
+                meta=item["meta"],
+                links=item["links"],
+                data=item["data"],
+                relations=item["data"].get("relations"),
+                trashed=item["data"].get("deleted"),
+            )
+            self._session.merge(item_object)
+
+        # Flush merged items before inserting related data, to satisfy foreign key constraints.
+        self._session.flush()
+
+        # Bulk insert related data.
+        self._bulk_insert_items_related(items)
 
     @write_operation
     def bulk_delete_items(self, keys: list[str]) -> None:
+        """Delete items, cascading to all related tables, including ItemFulltext."""
         # Handle the cascades because ORM bulk deletion does not trigger
         # database-level cascades.
         for model in (
@@ -425,25 +447,24 @@ class Library:
             self._bulk_delete_objects(model, "item_key", keys)
 
     @write_operation
-    def bulk_insert_items(self, items: list[Any]) -> None:
+    def _bulk_delete_items_related(self, keys: list[str]) -> None:
+        """Delete entries from tables related to Item, excluding ItemFulltext."""
+        for model in (
+            ItemCollection,
+            ItemTag,
+            ItemBib,
+            ItemExportFormat,
+            ItemFile,
+        ):
+            self._bulk_delete_objects(model, "item_key", keys)
+
+    @write_operation
+    def _bulk_insert_items_related(self, items: list[Any]) -> None:
         # Prepare data for bulk insertion.
-        item_objects = []
         collection_objects = []
         tag_objects = []
         file_objects = []
         for item in items:
-            item_object = {
-                "item_key": item["key"],
-                "version": item["version"],
-                "item_type": item["data"].get("itemType", ""),
-                "parent_item": item["data"].get("parentItem"),
-                "meta": item["meta"],
-                "links": item["links"],
-                "data": item["data"],
-                "relations": item["data"].get("relations"),
-                "trashed": item["data"].get("deleted"),
-            }
-            item_objects.append(item_object)
             collection_objects.extend(
                 [
                     {"item_key": item["key"], "collection_key": collection_key}
@@ -481,14 +502,12 @@ class Library:
                 )
 
         # Bulk insert data.
-        if item_objects:
-            self._session.bulk_insert_mappings(Item, item_objects)  # type: ignore[arg-type]
-            if collection_objects:
-                self._session.bulk_insert_mappings(ItemCollection, collection_objects)  # type: ignore[arg-type]
-            if tag_objects:
-                self._session.bulk_insert_mappings(ItemTag, tag_objects)  # type: ignore[arg-type]
-            if file_objects:
-                self._session.bulk_insert_mappings(ItemFile, file_objects)  # type: ignore[arg-type]
+        if collection_objects:
+            self._session.bulk_insert_mappings(ItemCollection, collection_objects)  # type: ignore[arg-type]
+        if tag_objects:
+            self._session.bulk_insert_mappings(ItemTag, tag_objects)  # type: ignore[arg-type]
+        if file_objects:
+            self._session.bulk_insert_mappings(ItemFile, file_objects)  # type: ignore[arg-type]
 
     @write_operation
     def insert_items_bib(self, items: list[Any], style: str, locale: str) -> None:
@@ -517,6 +536,10 @@ class Library:
 
         if obj:
             self._session.bulk_insert_mappings(ItemExportFormat, obj)  # type: ignore[arg-type]
+
+    @write_operation
+    def bulk_delete_items_fulltext(self, keys: list[str]) -> None:
+        self._bulk_delete_objects(ItemFulltext, "item_key", keys)
 
     @write_operation
     def insert_item_fulltext(self, item_key: str, data: dict[str, Any]) -> None:
