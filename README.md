@@ -192,7 +192,8 @@ Here are some of the design choices that have guided the development of Karboni:
   databases as well.
 - Since Karboni itself only needs a few simple database operations, encapsulate
   SQLAlchemy under a thin abstraction layer to decouple the synchronization
-  process from the database toolkit.
+  process from the database toolkit. Thus, only the `database` module has direct
+  SQLAlchemy dependencies.
 - Stay close to the Zotero schema. Store data in the JSON format provided by the
   Zotero API whenever possible, for consistency and better adaptability to
   future Zotero schema changes. Add SQL columns where they can be useful to the
