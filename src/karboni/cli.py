@@ -113,7 +113,7 @@ def cli(debug: bool) -> None:
 def init() -> None:
     """Initialize the mirror database (create the tables)."""
     try:
-        library_id, library_prefix, api_key = get_zotero_credentials()
+        library_id, library_prefix, _ = get_zotero_credentials()
         database_url = get_database_credentials(library_id, library_prefix)
     except click.UsageError as exc:
         logger.error(exc)  # noqa: TRY400 (No traceback needed)
@@ -132,7 +132,7 @@ def init() -> None:
 def clean(files: bool) -> None:
     """Clear the mirror database (drop the tables)."""
     try:
-        library_id, library_prefix, api_key = get_zotero_credentials()
+        library_id, library_prefix, _ = get_zotero_credentials()
         database_url = get_database_credentials(library_id, library_prefix)
         data_path = get_data_path(library_id, library_prefix)
     except click.UsageError as exc:
