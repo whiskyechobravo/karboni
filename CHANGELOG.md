@@ -1,11 +1,15 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 (2026-06-12)
 
 Bug fixes:
 
 - Fix sync crashing when an item's fulltext has changed but not the item itself.
 - Fix sync crashing with export format `csljson`.
+
+Other changes:
+
+- Fix minor code style and type annotation issues.
 
 
 ## 0.1.0alpha2 (2026-02-27)
