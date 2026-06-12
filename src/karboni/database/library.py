@@ -5,7 +5,7 @@ from collections.abc import Callable
 from enum import StrEnum
 from functools import wraps
 from types import TracebackType
-from typing import Any, TypeVar
+from typing import Any, Self, TypeVar
 
 from sqlalchemy import delete, inspect, select, update
 from sqlalchemy.orm import Session
@@ -97,7 +97,7 @@ class Library:
     def readonly(self) -> bool:
         return self._readonly
 
-    def __enter__(self) -> "Library":
+    def __enter__(self) -> Self:
         """Enter the session context. This allows usage in a with block."""
         return self
 
