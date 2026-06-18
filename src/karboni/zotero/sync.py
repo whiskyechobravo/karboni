@@ -78,7 +78,6 @@ class Synchronizer:
         export_formats: list[str] | None = None,
         fulltext: bool = False,
         files: bool = False,
-        # TODO: Add option to make searches synchronization optional (but enabled by default)
         media_types: list[str] | None = None,
         **kwargs: Any,
     ):
