@@ -54,10 +54,13 @@ class RequestLimiter:
 
     def reduce_concurrency(self) -> None:
         """Reduce concurrency by 20%."""
-        logger.warning("Reducing concurrency to %d", self._current_limit)
-        self._current_limit = max(1, self._current_limit * 4 // 5)
+        # Reduce concurrency except during backoff, as it's likely that
+        # concurrency got already reduced at backoff start.
         if not self._backoff:
-            self._capacity_limiter.total_tokens = self._current_limit
+            new_limit = max(1, self._current_limit * 4 // 5)
+            if new_limit != self._current_limit:
+                logger.warning("Reducing concurrency to %d", new_limit)
+                self._capacity_limiter.total_tokens = self._current_limit = new_limit
 
     async def acquire(self) -> None:
         await self._capacity_limiter.acquire()
