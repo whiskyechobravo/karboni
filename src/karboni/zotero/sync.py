@@ -240,9 +240,15 @@ class Synchronizer:
 
         # If no backoff is currently active.
         if not self._limiter.is_backoff_active():
-            if batch_size is not None and batch_size > 1:
-                # We're processing a batch whose size can still be reduced; we should cancel all
-                # requests from the same batch, reduce batch size, and re-schedule new batches.
+            # Reduce batch size except if the error is 429 Too Many Requests (that error calls for
+            # less concurrency, not smaller batches).
+            if (
+                batch_size is not None
+                and batch_size > 1
+                and exc.response.status_code != httpx.codes.TOO_MANY_REQUESTS
+            ):
+                # Cancel all requests from the same batch, reduce batch size, and re-schedule new
+                # batches.
                 raise BatchSizeError(wait)
 
             self._limiter.start_backoff()  # We get to start it.
