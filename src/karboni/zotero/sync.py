@@ -251,7 +251,7 @@ class Synchronizer:
         if started_backoff:
             # We initiated the active backoff, either just now or on a previous attempt,
             # thus we either start waiting, or extend the wait of an already active backoff.
-            logger.info("Backing off for %.1f seconds", wait)
+            logger.warning("Backing off for %.1f seconds", wait)
             await sleep(wait)  # Wait before retrying.
         else:
             # Give up request slot. Will need to reacquire it at the next try.
@@ -380,7 +380,7 @@ class Synchronizer:
                         raise RuntimeError(msg) from exc_group  # Not supposed to happen!
                     wait = max(exc.wait for exc in exc_group.exceptions)  # type: ignore[union-attr]
                     batch_size = max(1, batch_size * 4 // 5)  # Reduce by 20%.
-                    logger.info(
+                    logger.warning(
                         "Backing off for %.1f seconds in batch_process %s. "
                         "Reducing batch size to %d",
                         wait,
