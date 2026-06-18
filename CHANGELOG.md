@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+Performance:
+
+- Exclude HTTP 429 from errors that cause batch size reduction.
+- Don't reduce concurrency on error response received during backoff.
+
+Other changes:
+
+- Log backoff as warning.
+
+
 ## 0.1.0 (2026-06-12)
 
 Bug fixes:
