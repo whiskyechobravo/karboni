@@ -6,9 +6,9 @@ def make_http_client(
     max_connections: int = 20,
     max_keepalive_connections: int = 10,
     keepalive_expiry: float = 5.0,
-    connect_timeout: None | float = 60.0,
-    read_timeout: None | float = 60.0,
-    pool_timeout: None | float = None,
+    connect_timeout: float | None = 60.0,
+    read_timeout: float | None = 60.0,
+    pool_timeout: float | None = None,
 ) -> httpx.AsyncClient:
     """
     Instantiate an asynchronous http client.
