@@ -233,7 +233,7 @@ class Library:
     @write_operation
     def bulk_insert_item_types(self, item_types: list[Any]) -> None:
         item_type_objects = [{"item_type": t["itemType"]} for t in item_types]
-        self._session.bulk_insert_mappings(ItemType, item_type_objects)  # type: ignore[arg-type]
+        self._session.bulk_insert_mappings(ItemType, item_type_objects)
 
     @write_operation
     def insert_item_types_locale(self, item_types: list[Any], locale: str) -> None:
@@ -242,7 +242,7 @@ class Library:
             for t in item_types
         ]
         if obj:
-            self._session.bulk_insert_mappings(ItemTypeLocale, obj)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemTypeLocale, obj)
 
     @write_operation
     def insert_item_type_fields(self, fields: list[Any], item_type: str) -> None:
@@ -251,7 +251,7 @@ class Library:
             for i, f in enumerate(fields)
         ]
         if obj:
-            self._session.bulk_insert_mappings(ItemTypeField, obj)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemTypeField, obj)
 
     @write_operation
     def insert_item_type_fields_locale(
@@ -267,7 +267,7 @@ class Library:
             for f in fields
         ]
         if obj:
-            self._session.bulk_insert_mappings(ItemTypeFieldLocale, obj)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemTypeFieldLocale, obj)
 
     @write_operation
     def insert_item_type_creator_types(self, creator_types: list[Any], item_type: str) -> None:
@@ -276,7 +276,7 @@ class Library:
             for i, f in enumerate(creator_types)
         ]
         if obj:
-            self._session.bulk_insert_mappings(ItemTypeCreatorType, obj)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemTypeCreatorType, obj)
 
     @write_operation
     def insert_item_type_creator_types_locale(
@@ -292,7 +292,7 @@ class Library:
             for f in creator_types
         ]
         if obj:
-            self._session.bulk_insert_mappings(ItemTypeCreatorTypeLocale, obj)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemTypeCreatorTypeLocale, obj)
 
     @write_operation
     def merge_collections(self, collections: list[Any]) -> None:
@@ -352,7 +352,7 @@ class Library:
 
         # Bulk insert data.
         if collection_objects:
-            self._session.bulk_insert_mappings(Collection, collection_objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(Collection, collection_objects)
 
     @write_operation
     def merge_searches(self, searches: list[Any]) -> None:
@@ -388,7 +388,7 @@ class Library:
 
         # Bulk insert data.
         if search_objects:
-            self._session.bulk_insert_mappings(Search, search_objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(Search, search_objects)
 
     @write_operation
     def merge_items(self, items: list[Any]) -> None:
@@ -503,11 +503,11 @@ class Library:
 
         # Bulk insert data.
         if collection_objects:
-            self._session.bulk_insert_mappings(ItemCollection, collection_objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemCollection, collection_objects)
         if tag_objects:
-            self._session.bulk_insert_mappings(ItemTag, tag_objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemTag, tag_objects)
         if file_objects:
-            self._session.bulk_insert_mappings(ItemFile, file_objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemFile, file_objects)
 
     @write_operation
     def insert_items_bib(self, items: list[Any], style: str, locale: str) -> None:
@@ -518,7 +518,7 @@ class Library:
         ]
 
         if obj:
-            self._session.bulk_insert_mappings(ItemBib, obj)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemBib, obj)
 
     @write_operation
     def insert_items_export_format(self, items: list[Any], export_format: str) -> None:
@@ -535,7 +535,7 @@ class Library:
         ]
 
         if obj:
-            self._session.bulk_insert_mappings(ItemExportFormat, obj)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(ItemExportFormat, obj)
 
     @write_operation
     def bulk_delete_items_fulltext(self, keys: list[str]) -> None:
@@ -552,7 +552,7 @@ class Library:
             "indexed_chars": data.get("indexedChars"),
             "total_chars": data.get("totalChars"),
         }
-        self._session.bulk_insert_mappings(ItemFulltext, [obj])  # type: ignore[arg-type]
+        self._session.bulk_insert_mappings(ItemFulltext, [obj])
 
     @write_operation
     def insert_deleted_collections(self, keys: list[str]) -> None:
@@ -561,7 +561,7 @@ class Library:
 
         # Bulk insert data.
         if objects:
-            self._session.bulk_insert_mappings(DeletedCollection, objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(DeletedCollection, objects)
 
     @write_operation
     def insert_deleted_items(self, keys: list[str]) -> None:
@@ -570,7 +570,7 @@ class Library:
 
         # Bulk insert data.
         if objects:
-            self._session.bulk_insert_mappings(DeletedItem, objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(DeletedItem, objects)
 
     @write_operation
     def insert_deleted_searches(self, keys: list[str]) -> None:
@@ -579,7 +579,7 @@ class Library:
 
         # Bulk insert data.
         if objects:
-            self._session.bulk_insert_mappings(DeletedSearch, objects)  # type: ignore[arg-type]
+            self._session.bulk_insert_mappings(DeletedSearch, objects)
 
     @write_operation
     def insert_sync_history(

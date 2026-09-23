@@ -1,9 +1,9 @@
 import contextlib
 import logging
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Coroutine
 from functools import wraps
 from types import TracebackType
-from typing import ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar
 
 from anyio import CapacityLimiter, create_memory_object_stream
 from anyio.streams.memory import MemoryObjectReceiveStream
@@ -83,7 +83,7 @@ class RequestLimiter:
 
 def stream_result(
     func: Callable[P, Awaitable[T]],
-) -> Callable[P, tuple[Callable[[], Awaitable[None]], MemoryObjectReceiveStream[T]]]:
+) -> Callable[P, tuple[Callable[[], Coroutine[Any, Any, None]], MemoryObjectReceiveStream[T]]]:
     """
     Decorator that wraps an async function to capture its return value via a stream.
 
@@ -123,7 +123,7 @@ def stream_result(
     @wraps(func)
     def wrapper(
         *args: P.args, **kwargs: P.kwargs
-    ) -> tuple[Callable[[], Awaitable[None]], MemoryObjectReceiveStream[T]]:
+    ) -> tuple[Callable[[], Coroutine[Any, Any, None]], MemoryObjectReceiveStream[T]]:
         send_stream, receive_stream = create_memory_object_stream[T]()
 
         async def task_wrapper() -> None:

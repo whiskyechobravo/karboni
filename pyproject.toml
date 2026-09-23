@@ -38,9 +38,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "mypy >= 1.16.1",
-    "pre-commit >= 4.2.0",
-    "rope >= 1.13.0",
+    "mypy >= 2.3.0",
+    "prek >= 0.5.3",
     "ruff >= 0.12.11",
 ]
 
@@ -149,6 +148,7 @@ ignore = [
     "PLR0912", # Too many branches.
     "PLR0913", # Too many arguments in function definition.
     "PLR0915", # Too many statements.
+    "PLR0917", # Too many positional arguments.
 ]
 
 [tool.ruff.lint.pydocstyle]
