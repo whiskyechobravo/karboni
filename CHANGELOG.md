@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1 (2026-10-23)
+
+Changes:
+
+- Add support for Python 3.15.
+- Replace httpx with httpx2.
+- Replace pre-commit with prek.
+
+
 ## 0.2.0 (2026-06-18)
 
 Performance:
