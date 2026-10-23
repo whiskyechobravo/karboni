@@ -20,7 +20,7 @@ hooks = [
 repo = "https://github.com/pre-commit/mirrors-mypy"
 rev = "v1.16.1"
 hooks = [
-    { id = "mypy", additional_dependencies = [ "anyio", "click", "click-option-group", "httpx", "sqlalchemy" ] },
+    { id = "mypy", additional_dependencies = [ "anyio", "click", "click-option-group", "httpx2", "sqlalchemy" ] },
 ]
 
 [[repos]]

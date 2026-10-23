@@ -32,7 +32,7 @@ dependencies = [
     "click-option-group >= 0.5.7",
     "colorlog >= 6.10.1",
     "python-dotenv >= 1.1.1",
-    "httpx >= 0.28.1",
+    "httpx2 >= 2.15.1",
     "SQLAlchemy >= 2.0.41",
 ]
 
@@ -78,7 +78,7 @@ module = [
     "anyio.*",
     "click.*",
     "click-option-group.*",
-    "httpx.*",
+    "httpx2.*",
     "sqlalchemy.*",
 ]
 ignore_missing_imports = true

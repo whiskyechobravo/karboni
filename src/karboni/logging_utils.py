@@ -32,7 +32,7 @@ def setup_logging(debug: bool = False) -> None:
     # Set log level for specific modules.
     if debug:
         logging.getLogger("karboni").setLevel(logging.DEBUG)
-        logging.getLogger("httpx").setLevel(logging.DEBUG)
+        logging.getLogger("httpx2").setLevel(logging.DEBUG)
     else:
         logging.getLogger("karboni").setLevel(logging.INFO)
-        logging.getLogger("httpx").setLevel(logging.WARNING)
+        logging.getLogger("httpx2").setLevel(logging.WARNING)

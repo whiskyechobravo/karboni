@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-import httpx
+import httpx2 as httpx
 from anyio import Path as AsyncPath
 from anyio import run
 

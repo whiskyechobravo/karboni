@@ -1,4 +1,4 @@
-import httpx
+import httpx2 as httpx
 
 
 def make_http_client(

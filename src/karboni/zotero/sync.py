@@ -6,7 +6,7 @@ from collections.abc import Iterable, Iterator, Sequence
 from itertools import chain, islice
 from typing import Any, TypeVar
 
-import httpx
+import httpx2 as httpx
 from anyio import Path, create_task_group, sleep
 
 from karboni.async_utils import RequestLimiter, stream_result

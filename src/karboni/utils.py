@@ -1,4 +1,4 @@
-import httpx
+import httpx2 as httpx
 
 # Maximum length of response text to include in error logs
 MAX_RESPONSE_PREVIEW_LENGTH = 500

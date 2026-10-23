@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from io import BytesIO
 from typing import Any
 
-import httpx
+import httpx2 as httpx
 from anyio import Path
 
 from karboni.database.library import Library
